@@ -7,6 +7,7 @@ import (
 	"github.com/banking-superapp/wealth-service/model"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type MFSchemeRepo interface {
@@ -95,7 +96,7 @@ func (r *portfolioRepo) Upsert(ctx context.Context, p *model.Portfolio) error {
 	_, err := r.col.UpdateOne(ctx,
 		bson.M{"user_id": p.UserID},
 		bson.M{"$set": p},
-		&mongo.UpdateOptions{Upsert: boolPtr(true)},
+		options.UpdateOne().SetUpsert(true),
 	)
 	return err
 }
@@ -114,9 +115,7 @@ func (r *riskProfileRepo) Upsert(ctx context.Context, rp *model.RiskProfile) err
 	_, err := r.col.UpdateOne(ctx,
 		bson.M{"user_id": rp.UserID},
 		bson.M{"$set": rp},
-		&mongo.UpdateOptions{Upsert: boolPtr(true)},
+		options.UpdateOne().SetUpsert(true),
 	)
 	return err
 }
-
-func boolPtr(b bool) *bool { return &b }
